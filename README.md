@@ -1,5 +1,7 @@
 # "react-sample-page-generator"
 
+![Screenshot](https://raw.githubusercontent.com/shibukawa/react-sample-page-generator/master/screenshot/screenshot.png "Screenshot")
+
 This tool is a document generator for React components. This tool generates pages of Next.js from sample pages and Markdown documents. It natively supports TypeScript.
 
 ## Usage
