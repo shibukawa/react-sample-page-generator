@@ -1,0 +1,16 @@
+.editorconfig
+.git
+.gitignore
+.npmignore
+.travis.yml
+.vscode
+CHANGELOG.md
+__tests__
+dist
+jest.config.js
+node_modules
+src
+testsample
+tsconfig.json
+tslint.json
+types

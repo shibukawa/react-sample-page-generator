@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "./",
+      "jsx": "preserve",
+      "lib": ["dom", "es2017"],
+      "module": "CommonJS",
+      "moduleResolution": "node",
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "preserveConstEnums": true,
+      "removeComments": false,
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "strict": true,
+      "target": "esnext",
+      "outDir": "dist",
+      "paths": {
+          "find-package-json": ["types/find-package-json.d.ts"],
+          "package-repo": ["types/package-repo.d.ts"]
+      }
+    },
+    "include": [
+        "src"
+    ]
+  }
