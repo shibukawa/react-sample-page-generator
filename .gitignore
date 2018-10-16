@@ -3,6 +3,7 @@ dist
 testsample/out
 testsample/.next
 testsample/pages/*.tsx
+testsample/src/
 
 # dependencies
 node_modules
