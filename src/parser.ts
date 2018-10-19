@@ -21,39 +21,58 @@ export interface IProject {
 }
 
 export async function documentParser(
-    folderPath: string,
+    projectFolder: string,
+    documentFolder: string,
     withSource = false
 ): Promise<IPage[]> {
     const result: IPage[] = [];
 
-    const readmeNames = ["README", "README.md"];
-
-    for (const filename of readmeNames) {
-        const filepath = join(folderPath, filename);
-        let fileStat: Stats;
-        try {
-            fileStat = await statAsync(filepath);
-        } catch (_) {
-            continue;
+    const projectFiles = [
+        { name: "Readme", resultPath: "index", files: ["README", "README.md"] },
+        {
+            name: "License",
+            resultPath: "license",
+            files: ["LICENSE", "LICENSE.md"]
+        },
+        {
+            name: "Contributing",
+            resultPath: "contributing",
+            files: ["CONTRIBUTING", "CONTRIBUTING.md"]
+        },
+        {
+            name: "Change Log",
+            resultPath: "changelog",
+            files: ["CHANGELOG", "CHANGELOG.md", "HISTORY", "HISTORY.md"]
         }
-        if (fileStat.isFile()) {
-            const entry: IPage = {
-                name: "README",
-                path: "index"
-            };
-            if (withSource) {
-                entry.source = await readFileAsync(filepath, "utf8");
+    ];
+    for (const { name, resultPath, files } of projectFiles) {
+        for (const filename of files) {
+            const filepath = join(projectFolder, filename);
+            let fileStat: Stats;
+            try {
+                fileStat = await statAsync(filepath);
+            } catch (_) {
+                continue;
             }
-            result.push(entry);
-            break;
+            if (fileStat.isFile()) {
+                const entry: IPage = {
+                    name,
+                    path: resultPath
+                };
+                if (withSource) {
+                    entry.source = await readFileAsync(filepath, "utf8");
+                }
+                result.push(entry);
+                break;
+            }
         }
     }
 
-    for (const filename of await readdirAsync(join(folderPath, "docs"))) {
+    for (const filename of await readdirAsync(documentFolder)) {
         if (!filename.endsWith(".md")) {
             continue;
         }
-        const filepath = join(folderPath, "docs", filename);
+        const filepath = join(documentFolder, filename);
         const fileStat = await statAsync(filepath);
         if (fileStat.isFile()) {
             const source = await readFileAsync(filepath, "utf8");
@@ -78,16 +97,16 @@ export async function documentParser(
 }
 
 export async function exampleParser(
-    folderPath: string,
+    sampleFolderPath: string,
     withSource = false
 ): Promise<IPage[]> {
     const result: IPage[] = [];
 
-    for (const filename of await readdirAsync(join(folderPath, "samples"))) {
+    for (const filename of await readdirAsync(sampleFolderPath)) {
         if (!filename.endsWith(".jsx") && !filename.endsWith(".tsx")) {
             continue;
         }
-        const filepath = join(folderPath, "samples", filename);
+        const filepath = join(sampleFolderPath, filename);
         const fileStat = await statAsync(filepath);
         if (fileStat.isFile()) {
             const source = await readFileAsync(filepath, "utf8");

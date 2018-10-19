@@ -6,7 +6,6 @@
 .vscode
 CHANGELOG.md
 __tests__
-dist
 jest.config.js
 node_modules
 src
@@ -15,3 +14,4 @@ tsconfig.json
 tslint.json
 types
 screenshot
+*.tgz

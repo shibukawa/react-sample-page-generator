@@ -4,7 +4,7 @@ testsample/out
 testsample/.next
 testsample/pages/*.tsx
 testsample/src/
-
+*.tgz
 # dependencies
 node_modules
 yarn.lock

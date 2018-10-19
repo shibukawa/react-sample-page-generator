@@ -52,7 +52,7 @@ writing: pages/advance_sample.tsx
 * [Storybook](https://storybook.js.org/)
 * [docz](https://www.docz.site/)
 
-They are very good tools. I created this tool to reuse configs (babel/tsconfig etc) with actual production softwares.
+They are very good tools. But, I created this tool to reuse configs (babel/tsconfig etc) with actual production softwares.
 
 # License
 

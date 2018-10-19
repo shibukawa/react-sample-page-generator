@@ -5,16 +5,19 @@ const projectFolder = join(__dirname, "..", "testsample");
 
 describe("parser", () => {
     it("parse docs folder", async () => {
-        const docs = await documentParser(projectFolder);
+        const docs = await documentParser(
+            projectFolder,
+            join(projectFolder, "docs")
+        );
         expect(docs).toStrictEqual([
-            { name: "README", path: "index" },
+            { name: "Readme", path: "index" },
             { name: "Test1", path: "0.test1" },
             { name: "Test2", path: "1.test2" }
         ]);
     });
 
-    it("parse example folder", async () => {
-        const examples = await exampleParser(projectFolder);
+    it("parse sample folder", async () => {
+        const examples = await exampleParser(join(projectFolder, "samples"));
         expect(examples).toStrictEqual([
             {
                 name: "Sample1",
