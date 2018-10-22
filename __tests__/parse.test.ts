@@ -1,9 +1,9 @@
 import { join } from "path";
 import { documentParser, exampleParser, projectParser } from "../src/parser";
 
-const projectFolder = join(__dirname, "..", "testsample");
+describe("parser - ok", () => {
+    const projectFolder = join(__dirname, "..", "testsamples", "successsample");
 
-describe("parser", () => {
     it("parse docs folder", async () => {
         const docs = await documentParser(
             projectFolder,
@@ -39,5 +39,29 @@ describe("parser", () => {
             "https://github.com/shibukawa/testsample"
         );
         expect(project.homepageType).toBe("github");
+    });
+});
+
+describe("parser - empty", () => {
+    const projectFolder = join(__dirname, "..", "testsamples", "emptysample");
+
+    it("parse docs folder", async () => {
+        const docs = await documentParser(
+            projectFolder,
+            join(projectFolder, "docs")
+        );
+        expect(docs).toStrictEqual([]);
+    });
+
+    it("parse sample folder", async () => {
+        const examples = await exampleParser(join(projectFolder, "samples"));
+        expect(examples).toStrictEqual([]);
+    });
+
+    it("parse project folder", async () => {
+        const project = await projectParser(projectFolder);
+        expect(project.name).toBe("testsample");
+        expect(project.homepage).toBeUndefined();
+        expect(project.homepageType).toBe("other");
     });
 });

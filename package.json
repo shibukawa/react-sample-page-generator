@@ -1,13 +1,14 @@
 {
   "name": "react-sample-page-generator",
-  "version": "0.1.0",
-  "description": "The best web application ever.",
+  "version": "0.1.1",
+  "description": "React sample page generator from samplecode/markdown to Next.js pages",
   "scripts": {
     "build": "tsc --project .",
     "lint": "tslint --project .",
     "fix": "tslint --fix --project .",
     "test": "jest",
-    "watch": "jest --watchAll"
+    "watch": "jest --watchAll",
+    "prepack": "npm run build"
   },
   "bin": {
     "react-sample-page-generator": "dist/index.js"

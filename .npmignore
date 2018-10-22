@@ -9,7 +9,7 @@ __tests__
 jest.config.js
 node_modules
 src
-testsample
+testsamples
 tsconfig.json
 tslint.json
 types

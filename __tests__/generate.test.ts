@@ -4,7 +4,7 @@ import { join } from "path";
 import { generateDocPage } from "../src/generate_doc";
 import { generateSamplePage } from "../src/generate_sample";
 
-const projectFolder = join(__dirname, "..", "testsample");
+const projectFolder = join(__dirname, "..", "testsamples", "successsample");
 
 async function exists(filename: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {

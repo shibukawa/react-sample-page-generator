@@ -18,9 +18,6 @@ export async function main() {
     const f = finder();
     const { filename } = f.next();
     const projectPath = dirname(filename);
-    console.log(
-        `${clc.blueBright("reading project settings:")} ${projectPath}`
-    );
     const cliOptions = [
         {
             name: "projectdir",
@@ -54,7 +51,7 @@ export async function main() {
     if (opts.help) {
         const usage = commandLineUsage([
             {
-                header: "react-sample-page-generator",
+                header: clc.magentaBright("react-sample-page-generator"),
                 content:
                     "Generates sample page web page from saple codes and markdowns."
             },
@@ -70,9 +67,16 @@ export async function main() {
                 optionList: cliOptions
             }
         ]);
-        console.error(usage);
+        console.log(usage);
         return;
     }
+
+    console.log(clc.magentaBright("react-sample-page-generator"));
+
+    console.log(
+        `${clc.blueBright("reading project settings:")} ${projectPath}`
+    );
+
     const [project, samples, documents] = await Promise.all([
         projectParser(opts.projectdir),
         exampleParser(opts.sampledir, true),

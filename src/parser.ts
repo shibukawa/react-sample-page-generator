@@ -68,7 +68,15 @@ export async function documentParser(
         }
     }
 
-    for (const filename of await readdirAsync(documentFolder)) {
+    let fileEntries: string[] = [];
+    try {
+        fileEntries = await readdirAsync(documentFolder);
+    } catch (e) {
+        // no doc directory
+        return result;
+    }
+
+    for (const filename of fileEntries) {
         if (!filename.endsWith(".md")) {
             continue;
         }
@@ -102,7 +110,15 @@ export async function exampleParser(
 ): Promise<IPage[]> {
     const result: IPage[] = [];
 
-    for (const filename of await readdirAsync(sampleFolderPath)) {
+    let fileEntries: string[] = [];
+    try {
+        fileEntries = await readdirAsync(sampleFolderPath);
+    } catch (e) {
+        // no doc directory
+        return result;
+    }
+
+    for (const filename of fileEntries) {
         if (!filename.endsWith(".jsx") && !filename.endsWith(".tsx")) {
             continue;
         }
@@ -134,19 +150,26 @@ export async function exampleParser(
 export async function projectParser(folderPath: string): Promise<IProject> {
     const path = join(folderPath, "package.json");
     const project = JSON.parse(await readFileAsync(path, "utf8"));
-    const repo = packageRepo(path);
-
     const result = {
         name: project.name,
         homepage: "",
         homepageType: ""
     };
+    let httpsUrl = "";
+    try {
+        const repo = packageRepo(path);
+        if (repo) {
+            httpsUrl = repo.https_url;
+        }
+    } catch (e) {
+        return result;
+    }
 
-    if (repo && repo.https_url.startsWith("https://github.com")) {
-        result.homepage = repo.https_url;
+    if (httpsUrl.startsWith("https://github.com")) {
+        result.homepage = httpsUrl;
         result.homepageType = "github";
-    } else if (repo && repo.https_url.startsWith("https://bitbucket.org")) {
-        result.homepage = repo.https_url;
+    } else if (httpsUrl.startsWith("https://bitbucket.org")) {
+        result.homepage = httpsUrl;
         result.homepageType = "bitbucket";
     } else {
         result.homepage = project.homepage;

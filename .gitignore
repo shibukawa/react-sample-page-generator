@@ -1,9 +1,9 @@
 # build output
 dist
-testsample/out
-testsample/.next
-testsample/pages/*.tsx
-testsample/src/
+testsamples/*/out
+testsamples/*/.next
+testsamples/*/pages/*.tsx
+testsamples/*/src/
 *.tgz
 # dependencies
 node_modules
