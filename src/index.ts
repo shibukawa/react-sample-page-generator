@@ -71,17 +71,28 @@ export async function main() {
         return;
     }
 
-    console.log(clc.magentaBright("react-sample-page-generator"));
+    console.log(clc.blueBright("react-sample-page-generator"));
 
     console.log(
-        `${clc.blueBright("reading project settings:")} ${projectPath}`
+        `${clc.magentaBright("reading package.json at: ")} ${opts.projectdir}`
     );
-
+    console.log(
+        `${clc.magentaBright("reading samples at:      ")} ${opts.sampledir}`
+    );
+    console.log(
+        `${clc.magentaBright("reading documents at:    ")} ${opts.docdir}`
+    );
     const [project, samples, documents] = await Promise.all([
         projectParser(opts.projectdir),
         exampleParser(opts.sampledir, true),
         documentParser(opts.projectdir, opts.docdir, true)
     ]);
+    if (samples.length === 0) {
+        console.log(clc.yellowBright("    no sample found"));
+    }
+    if (documents.length === 0) {
+        console.log(clc.yellowBright("    no document found"));
+    }
     await Promise.all([
         (async () => {
             generateNavigator(projectPath);

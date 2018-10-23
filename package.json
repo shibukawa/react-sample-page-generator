@@ -1,6 +1,6 @@
 {
   "name": "react-sample-page-generator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React sample page generator from samplecode/markdown to Next.js pages",
   "scripts": {
     "build": "tsc --project .",
