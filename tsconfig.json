@@ -18,7 +18,8 @@
       "outDir": "dist",
       "paths": {
           "find-package-json": ["types/find-package-json.d.ts"],
-          "package-repo": ["types/package-repo.d.ts"]
+          "package-repo": ["types/package-repo.d.ts"],
+          "to-title-case": ["types/to-title-case.d.ts"]
       }
     },
     "include": [

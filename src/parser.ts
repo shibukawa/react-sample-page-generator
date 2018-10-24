@@ -3,7 +3,7 @@ import { join, parse } from "path";
 import { promisify } from "util";
 
 import * as packageRepo from "package-repo";
-import titleCase from "title-case";
+import * as toTitleCase from "to-title-case";
 import * as ts from "typescript";
 
 const readdirAsync = promisify(readdir);
@@ -208,7 +208,7 @@ export async function exampleParser(
             if (!found) {
                 const path = parse(filename).name;
                 const entry: IPage = {
-                    name: titleCase(path),
+                    name: toTitleCase(path),
                     path,
                     importPath: `../samples/${path}`
                 };
