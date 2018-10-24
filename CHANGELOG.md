@@ -4,6 +4,10 @@ All notable changes to the "react-sample-page-generator" will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.3 - Oct 25 2018
+
+- Parse and show markdown comment in TypeScript code
+
 ## 0.1.2 - Oct 23 2018
 
 - Improve log message

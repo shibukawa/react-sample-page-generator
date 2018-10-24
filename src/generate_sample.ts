@@ -11,6 +11,7 @@ const template = `
 import React, { Component } from "react";
 import { Navigator, IDocument, ISample } from "../src/_navigator";
 import Paper from '@material-ui/core/Paper';
+import Markdown from "react-markdown";
 import SyntaxHighlighter from 'react-syntax-highlighter/prism';
 import { dark } from 'react-syntax-highlighter/styles/prism';
 
@@ -20,12 +21,13 @@ const docs: IDocument[] = <%- JSON.stringify(docs) %>;
 const samples: ISample[] = <%- JSON.stringify(samples) %>;
 const source = <%- JSON.stringify(source) %>;
 const currentPath = <%- JSON.stringify(currentPath) %>;
+const doc = <%- JSON.stringify(doc) %>;
 
 export default class SamplePage extends Component {
     public render() {
         return (
             <Navigator docs={docs} samples={samples} currentPath={currentPath} project={<%- JSON.stringify(project) %>}>
-                <h1>{<%- JSON.stringify(name) %>}</h1>
+                {doc ? <Markdown source={doc}/> : <h1>{<%- JSON.stringify(name) %>}</h1>}
                 <Paper>
                     <Fixture />
                 </Paper>
@@ -67,6 +69,7 @@ export async function generateSamplePage(
         samples: filteredSamples,
         source: currentSample.source,
         name: currentSample.name,
+        doc: currentSample.doc,
         currentPath,
         project,
         importPath: currentSample.importPath

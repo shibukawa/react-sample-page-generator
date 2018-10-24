@@ -36,6 +36,32 @@ Then add samples and documents (markdown).
 * Sample files should be in ``/docs`` folder and they should have extension ".md".
 * "README" or "README.md" will be an index page.
 
+TypeScript should have the following structure:
+
+```ts
+/*@
+# SVG Sample
+
+This sample shows SVG component.
+Comment should start "/*@" and has markdown document.
+*/
+
+// Use "export default" to return React componet/view function (This is a rule of Next.js)
+export default function() {
+    return (
+        <svg height="400" width="450" xmlns="http://www.w3.org/2000/svg">
+            <path
+                id="lineAB"
+                d="M 100 350 l 150 -300"
+                stroke="red"
+                stroke-width="3"
+                fill="none"
+            />
+        </svg>
+    );
+}
+```
+
 You can generate pages like this:
 
 ```sh

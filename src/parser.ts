@@ -1,7 +1,10 @@
 import { readdir, readFile, stat, Stats } from "fs";
-import * as packageRepo from "package-repo";
-import { join } from "path";
+import { join, parse } from "path";
 import { promisify } from "util";
+
+import * as packageRepo from "package-repo";
+import titleCase from "title-case";
+import * as ts from "typescript";
 
 const readdirAsync = promisify(readdir);
 const readFileAsync = promisify(readFile);
@@ -12,6 +15,7 @@ export interface IPage {
     path: string;
     importPath?: string;
     source?: string;
+    doc?: string;
 }
 
 export interface IProject {
@@ -84,24 +88,69 @@ export async function documentParser(
         const fileStat = await statAsync(filepath);
         if (fileStat.isFile()) {
             const source = await readFileAsync(filepath, "utf8");
-            for (const line of source.split(/\r?\n/)) {
-                const match = line.match(/^#\s+(.+)$/);
-                if (match) {
-                    const entry: IPage = {
-                        name: match[1].trim(),
-                        path: `${filename.slice(0, filename.length - 3)}`
-                    };
-                    if (withSource) {
-                        entry.source = source;
-                    }
-                    result.push(entry);
-                    break;
+            const title = parseMarkdown(source);
+            if (title !== null) {
+                const entry: IPage = {
+                    name: title,
+                    path: `${filename.slice(0, filename.length - 3)}`
+                };
+                if (withSource) {
+                    entry.source = source;
                 }
+                result.push(entry);
             }
         }
     }
 
     return result;
+}
+
+function parseMarkdown(sourceText: string): string | null {
+    for (const line of sourceText.split(/\r?\n/)) {
+        const match = line.match(/^#\s+(.+)$/);
+        if (match) {
+            return match[1].trim();
+        }
+    }
+    return null;
+}
+
+interface IMarkdown {
+    title: string;
+    markdownSource: string;
+    typeScriptSource: string;
+}
+
+function findMarkdownDoc(node: ts.Node, sourceText: string): IMarkdown | null {
+    const comments: ts.CommentRange[] = [];
+    const leadingComments = ts.getLeadingCommentRanges(sourceText, node.pos);
+    if (leadingComments) {
+        comments.push(...leadingComments);
+    }
+    const trailingComments = ts.getTrailingCommentRanges(sourceText, node.end);
+    if (trailingComments) {
+        comments.push(...trailingComments);
+    }
+    for (const comment of comments) {
+        const commentText = sourceText.slice(comment.pos, comment.end);
+        const match = /\/\*@([\s|\S]*)\*\//g.exec(commentText);
+        if (match) {
+            const markdown = match[1];
+            const title = parseMarkdown(markdown);
+            const typeScriptSource = (
+                sourceText.slice(0, comment.pos) + sourceText.slice(comment.end)
+            ).trim();
+            if (title !== null) {
+                return {
+                    title,
+                    markdownSource: markdown,
+                    typeScriptSource
+                };
+            }
+        }
+    }
+
+    return null;
 }
 
 export async function exampleParser(
@@ -125,22 +174,48 @@ export async function exampleParser(
         const filepath = join(sampleFolderPath, filename);
         const fileStat = await statAsync(filepath);
         if (fileStat.isFile()) {
-            const source = await readFileAsync(filepath, "utf8");
-            for (const line of source.split(/\r?\n/)) {
-                const match = line.match(/^\/\/\s+(.+)$/);
-                if (match) {
-                    const path = filename.slice(0, filename.length - 4);
-                    const entry: IPage = {
-                        name: match[1].trim(),
-                        path: `${path}`,
-                        importPath: `../samples/${path}`
-                    };
-                    if (withSource) {
-                        entry.source = source;
+            const sourceText = await readFileAsync(filepath, "utf8");
+            const sourceFile = ts.createSourceFile(
+                filename,
+                sourceText,
+                ts.ScriptTarget.ES2018,
+                true
+            );
+            let found = false;
+            function parseTS(source: ts.SourceFile) {
+                function parseNode(node: ts.Node) {
+                    const markdown = findMarkdownDoc(node, sourceText);
+                    if (markdown) {
+                        found = true;
+                        const path = parse(filename).name;
+                        const entry: IPage = {
+                            name: markdown.title,
+                            path,
+                            importPath: `../samples/${path}`
+                        };
+                        if (withSource) {
+                            entry.source = markdown.typeScriptSource;
+                            entry.doc = markdown.markdownSource;
+                        }
+                        result.push(entry);
+                    } else {
+                        ts.forEachChild(node, parseNode);
                     }
-                    result.push(entry);
-                    break;
                 }
+                parseNode(source);
+            }
+            parseTS(sourceFile);
+            if (!found) {
+                const path = parse(filename).name;
+                const entry: IPage = {
+                    name: titleCase(path),
+                    path,
+                    importPath: `../samples/${path}`
+                };
+                if (withSource) {
+                    entry.source = sourceText.trim();
+                }
+                result.push(entry);
             }
         }
     }

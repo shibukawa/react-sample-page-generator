@@ -20,12 +20,12 @@ describe("parser - ok", () => {
         const examples = await exampleParser(join(projectFolder, "samples"));
         expect(examples).toStrictEqual([
             {
-                name: "Sample1",
+                name: "Hello World Sample",
                 path: "sample1",
                 importPath: "../samples/sample1"
             },
             {
-                name: "Sample2",
+                name: "SVG Sample",
                 path: "sample2",
                 importPath: "../samples/sample2"
             }

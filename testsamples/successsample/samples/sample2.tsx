@@ -1,4 +1,8 @@
-// Sample2
+/*@
+# SVG Sample
+
+This sample shows SVG component.
+*/
 
 export default function() {
     return (
